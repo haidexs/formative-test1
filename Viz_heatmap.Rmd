@@ -1,0 +1,51 @@
+---
+title: "Visualize Heatmap"
+author: "Zhulin Yu"
+date: "10/19/2017"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r Load Library and Check version}
+library(readxl)
+library(plotly)
+packageVersion('plotly')
+```
+```{r Read and Clean Data}
+# Data from D1.xlsx
+
+D1 = read_excel("D1.xlsx")
+D1[D1 == "Did not answer"] = 0
+D3 = subset(D1, select = -c(X__1, pull.request, attached.rmd))
+
+# Data from formative1-results-DI.csv
+
+# D2 = read.csv("formative1-results-DI.csv", stringsAsFactors=FALSE)
+# D3 = D2
+# 
+# D3[D3== "Yes"] <- 1
+# D3[D3 == "Did not answer"] = 0
+# D3[D3 == "No"] = 0
+# D3 = subset(D3, select = -c(pull.request, attached.rmd))
+
+M1 = as.matrix(D3)
+class(M1) <- "numeric"
+```
+
+```{r}
+p <- plot_ly(z = M1, 
+             colors = colorRamp(c("blue", "orange")), 
+             type = "heatmap", 
+             x=c(1:14), 
+             y=c(1:29)) %>%
+  layout(xaxis = list(title = "Question Number"), yaxis = list(title = "Student ID"))
+htmltools::tagList(list(p, p))
+
+# Create a shareable link to your chart
+# Set up API credentials: https://plot.ly/r/getting-started
+# chart_link = plotly_POST(p, filename="heatmap/cat")
+# chart_link
+```
